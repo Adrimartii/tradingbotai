@@ -3,7 +3,7 @@ import { BotState, Trade, NewsItem } from '../types/trading';
 import { RSI, EMA } from 'technicalindicators';
 import * as binance from '../services/binance';
 import * as news from '../services/news';
-import * as ai from '../services/openai';
+import { analyzeMarketConditions, incrementTradeCount } from '../services/openai';
 
 const STOP_LOSS_PERCENTAGE = 5;
 const TAKE_PROFIT_PERCENTAGE = 10;
@@ -69,6 +69,9 @@ export function useTradingBot() {
 
   const executeTrade = useCallback(async (type: 'BUY' | 'SELL', price: number) => {
     try {
+      // Incrémenter le compteur de trades
+      incrementTradeCount(false);
+
       const result = await (type === 'BUY' ? 
         binance.executeBuyOrder() : 
         binance.executeSellOrder()
@@ -115,7 +118,7 @@ export function useTradingBot() {
         const indicators = await calculateIndicators(historicalData);
         
         // Get AI analysis
-        const aiAnalysis = await ai.analyzeMarketConditions(
+        const aiAnalysis = await analyzeMarketConditions(
           newsData,
           indicators,
           currentPrice
@@ -131,11 +134,13 @@ export function useTradingBot() {
             (indicators.rsi < 30 && indicators.ema20 > indicators.ema50 && 
              aiAnalysis.sentiment === 'bullish' && aiAnalysis.confidence > 0.7)
           ) {
+            incrementTradeCount(true);
             await executeTrade('BUY', currentPrice);
           } else if (
             (indicators.rsi > 70 && indicators.ema20 < indicators.ema50 && 
              aiAnalysis.sentiment === 'bearish' && aiAnalysis.confidence > 0.7)
           ) {
+            incrementTradeCount(true);
             await executeTrade('SELL', currentPrice);
           }
         }
