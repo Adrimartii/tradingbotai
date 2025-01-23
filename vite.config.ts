@@ -10,8 +10,7 @@ export default defineConfig({
   define: {
     'process.env': {
       BINANCE_API_KEY: JSON.stringify(process.env.BINANCE_API_KEY),
-      BINANCE_API_SECRET: JSON.stringify(process.env.BINANCE_API_SECRET),
-      GNEWS_API_KEY: JSON.stringify(process.env.GNEWS_API_KEY)
+      BINANCE_API_SECRET: JSON.stringify(process.env.BINANCE_API_SECRET)
     }
   },
 });
