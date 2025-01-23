@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
+    }
+  ],
+  "env": {
+    "BINANCE_API_KEY": "@binance_api_key",
+    "BINANCE_API_SECRET": "@binance_api_secret",
+    "OPENAI_API_KEY": "@openai_api_key",
+    "GNEWS_API_KEY": "@gnews_api_key"
+  }
+}
